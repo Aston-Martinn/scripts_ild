@@ -164,6 +164,64 @@ if [ $host == AdvaithBhat ] && [ $codename == RMX2121 ] && [ $rom_name == tenx ]
     git clone --quiet git@github.com:TenX-OS-Beta/packes_apps_TenX.git packages/apps/TenX > /dev/null
 fi
 
+# Clone device trees
+function clone_trees() {
+    if [ $device != realme ]; then
+       if [ $device != oneplus ]; then
+          if [ $codename != RMX2121 ]; then
+              if [ $codename != kebab ]; then
+                echo -e "Enter your Device Tree link: "
+                read device_tree
+                echo -e "Enter your Device Tree branch"
+                read device_tree_branch
+                echo -e "Enter your Vendor Tree link: "
+                read vendor_tree
+                echo -e "Enter your Vendor Tree branch"
+                read vendor_tree_branch
+                echo -e "Enter your Kernel Tree link: "
+                read kernel_tree
+                echo -e "Enter your Kernel Tree branch"
+                read kernel_tree_branch
+
+                echo -e "Cloning Device Tree"
+                git clone --quiet $device_tree -b $device_tree_branch device/$device/$codename > /dev/null
+                echo -e "Kernel path uses platform or codename?"
+                select yn in "Yes" "No";
+                do
+                  case $yn in
+                  Yes)
+                     echo -e "Enter device platform"
+                     read platform
+                     git clone --quiet $kernel_tree -b kernel/$device/$platform
+                     break
+                     ;;
+                  No)
+                     git clone --quiet $kernel_tree -b kernel/$device/$codename > /dev/null
+                     break
+                     ;;
+                  esac
+                done
+
+                echo -e "Has common vendor?"
+                select yn in "Yes" "No";
+                do
+                  case $yn in
+                  Yes)
+                     git clone --quiet $vendor_tree -b $vendor/$device/
+                     break
+                     ;;
+                  No)
+                     git clone --quiet $vendor_tree -b $vendor/$device/$codename > /dev/null
+                     break
+                     ;;
+                  esac
+                done
+             fi
+          fi
+       fi
+    fi
+}
+
 # Clone sources
 function clone() {
     echo -e "Enter the device tree branch: "
@@ -190,8 +248,7 @@ function clone() {
        git clone --quiet git@github.com:Realme-X7-Pro-Developers/device_realme_RMX2121.git -b eleven $dt_branch/$device/$codename > /dev/null
        git clone --quiet git@github.com:Realme-X7-Pro-Developers/vendor_realme_RMX2121.git -b 11-rmui2 $vt_branch/$device/$codename > /dev/null
     else
-       echo -e "Device not found"
-       exit 1
+       clone_trees
     fi
 }
 
