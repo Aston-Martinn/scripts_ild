@@ -155,16 +155,19 @@ function rom_name() {
 }
 
 # Clone my private TenX sources
-if [ $host == AdvaithBhat ] && [ $codename == RMX2121 ] && [ $rom_name == tenx ]; then
-    rm -rf frameworks/base
-    rm -rf packages/apps/Settings
-    rm -rf packages/apps/TenX
-    rm -rf vendor/overlays/Elegance
+if [[ -d /home/kuntao ]];
+then
+    if [ $codename == RMX2121 ] && [ $rom_name == tenx ]; then
+        rm -rf frameworks/base
+        rm -rf packages/apps/Settings
+        rm -rf packages/apps/TenX
+        rm -rf vendor/overlays/Elegance
 
-    git clone --quiet git@github.com:TenX-OS-Beta/frameworks_base.git frameworks/base > /dev/null
-    git clone --quiet git@github.com:TenX-OS-Beta/vendor_overlays_Elegance.git vendor/overlays/Elegance > /dev/null
-    git clone --quiet git@github.com:TenX-OS-Beta/packages_apps_Settings.git packages/apps/Settings > /dev/null
-    git clone --quiet git@github.com:TenX-OS-Beta/packes_apps_TenX.git packages/apps/TenX > /dev/null
+        git clone --quiet git@github.com:TenX-OS-Beta/frameworks_base.git frameworks/base > /dev/null
+        git clone --quiet git@github.com:TenX-OS-Beta/vendor_overlays_Elegance.git vendor/overlays/Elegance > /dev/null
+        git clone --quiet git@github.com:TenX-OS-Beta/packages_apps_Settings.git packages/apps/Settings > /dev/null
+        git clone --quiet git@github.com:TenX-OS-Beta/packes_apps_TenX.git packages/apps/TenX > /dev/null
+    fi
 fi
 
 # Clone device trees
