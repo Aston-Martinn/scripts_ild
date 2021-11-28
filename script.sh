@@ -51,6 +51,9 @@ else
     No)
        break
        ;;
+    *)
+       break
+       ;;
        esac
     done
 fi
@@ -69,6 +72,9 @@ else
        break
        ;;
     No)
+       break
+       ;;
+    *)
        break
        ;;
        esac
@@ -150,6 +156,10 @@ function rom_name() {
             sendTG "Syncing Lineage-OS"
             repo init -u git://github.com/LineageOS/android.git -b lineage-18.1
             repo sync
+            ;;
+        *)
+            echo -e "Enter parameter is not available"
+            exit 1
             ;;
     esac
 }
@@ -246,6 +256,9 @@ function clone() {
     No)
        break
        ;;
+    *)
+       break
+       ;;
        esac
     done
 
@@ -275,6 +288,9 @@ function build_type() {
          . build/envsetup.sh
          make installclean
          echo -e "Making a Dirty build"
+         break
+         ;;
+      *)
          break
          ;;
        esac
