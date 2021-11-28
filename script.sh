@@ -76,8 +76,11 @@ else
 fi
 
 # Host
-echo -e "Enter the Host name: "
+if [[ -d /home/kuntao ]];
+then
+    echo -e "Enter the Host name: "
 read host
+fi
 
 while true;
 do
