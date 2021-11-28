@@ -195,6 +195,29 @@ function clone() {
     fi
 }
 
+# Clean build
+function build_type() {
+    echo -e "Do you want to make a Clean build?"
+    select yn in "Yes" "No";
+    do
+      case $yn in
+      Yes)
+         echo -e "Making a Clean build..."
+         . build/envsetup.sh
+         make clean
+         make clobber
+         break
+         ;;
+      No)
+         . build/envsetup.sh
+         make installclean
+         echo -e "Making a Dirty build"
+         break
+         ;;
+       esac
+    done
+}
+
 # Compile
 function compile() {
     if [ $rom_name == tenx ]; then
@@ -273,5 +296,6 @@ device_name
 device_codename
 rom_name
 clone
+build_type
 compile
 upload
