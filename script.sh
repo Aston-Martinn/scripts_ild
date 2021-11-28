@@ -31,7 +31,6 @@ echo -e "$red ███████║███████╗   ██║   █
 echo -e "$red ██╔══██║╚════██║   ██║   ██║   ██║██║╚██╗██║╚════╝██║╚██╔╝██║██╔══██║██╔══██╗   ██║   ██║██║╚██╗██║██║╚██╗██║$nocol"
 echo -e "$red ██║  ██║███████║   ██║   ╚██████╔╝██║ ╚████║      ██║ ╚═╝ ██║██║  ██║██║  ██║   ██║   ██║██║ ╚████║██║ ╚████║$nocol"
 echo -e "$red ╚═╝  ╚═╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═══╝      ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝$nocol"
-
 # Simple bash script to compile TenX-OS
 
 # Checks for Mega & Gdrive
@@ -205,6 +204,9 @@ function compile() {
        ▪️Host: \`Advaith Bhat\`
        ▪️Host-Machine: \`Kuntao-server\`"
        . build/envsetup.sh
+       if [ $host == AdvaithBhat ] && [ $codename == RMX2121 ]; then
+          export CUSTOM_BUILD_TYPE=Official
+       fi
        lunch aosp_$codename-userdebug
        export USE_CCACHE=1
        ccache -M 30G
