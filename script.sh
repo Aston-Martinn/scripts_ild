@@ -64,9 +64,10 @@ if [[ -f /usr/local/bin/rmega-up ]]; then
 else
     echo -e "Mega is not installed"
     echo -e "Would you like to install Mega?"
-    select yn in "Yes" "No"; do
-    case $yn in
-    Yes)
+    select yn in "Yes" "No";
+    do
+      case $yn in
+      Yes)
        sudo apt-get install ruby gem
        sudo gem install rmega
        break
@@ -111,6 +112,8 @@ do
       ;;
   esac
 done
+
+cd ~
 
 # Device name
 function device_name() {
@@ -164,116 +167,109 @@ function rom_name() {
     esac
 }
 
-# Clone my private TenX sources
-if [[ -d /home/kuntao ]];
-then
-    if [ $codename == RMX2121 ] && [ $rom_name == tenx ]; then
-        rm -rf frameworks/base
-        rm -rf packages/apps/Settings
-        rm -rf packages/apps/TenX
-        rm -rf vendor/overlays/Elegance
-
-        git clone --quiet git@github.com:TenX-OS-Beta/frameworks_base.git frameworks/base > /dev/null
-        git clone --quiet git@github.com:TenX-OS-Beta/vendor_overlays_Elegance.git vendor/overlays/Elegance > /dev/null
-        git clone --quiet git@github.com:TenX-OS-Beta/packages_apps_Settings.git packages/apps/Settings > /dev/null
-        git clone --quiet git@github.com:TenX-OS-Beta/packes_apps_TenX.git packages/apps/TenX > /dev/null
-    fi
+# make build if Trees exists
+if [[ -f /$rom_name/device/$device/$codename ]] && [[ -f /$rom_name/vendor/$device/$codename ]]; then
+    build_type
 fi
 
-# Clone device trees
-function clone_trees() {
-    if [ $device != realme ]; then
-       if [ $device != oneplus ]; then
-          if [ $codename != RMX2121 ]; then
-              if [ $codename != kebab ]; then
-                echo -e "Enter your Device Tree link: "
-                read device_tree
-                echo -e "Enter your Device Tree branch"
-                read device_tree_branch
-                echo -e "Enter your Vendor Tree link: "
-                read vendor_tree
-                echo -e "Enter your Vendor Tree branch"
-                read vendor_tree_branch
-                echo -e "Enter your Kernel Tree link: "
-                read kernel_tree
-                echo -e "Enter your Kernel Tree branch"
-                read kernel_tree_branch
+# Clone my private TenX sources
+function check_tenx() {
+    if [[ -d /home/kuntao ]];
+    then
+        if [ $codename == RMX2121 ] && [ $rom_name == tenx ]; then
+            rm -rf frameworks/base
+            rm -rf packages/apps/Settings
+            rm -rf packages/apps/TenX
+            rm -rf vendor/overlays/Elegance
 
-                echo -e "Cloning Device Tree"
-                git clone --quiet $device_tree -b $device_tree_branch device/$device/$codename > /dev/null
-                echo -e "Kernel path uses platform or codename?"
-                select yn in "Yes" "No";
-                do
-                  case $yn in
-                  Yes)
-                     echo -e "Enter device platform"
-                     read platform
-                     git clone --quiet $kernel_tree -b kernel/$device/$platform
-                     break
-                     ;;
-                  No)
-                     git clone --quiet $kernel_tree -b kernel/$device/$codename > /dev/null
-                     break
-                     ;;
-                  esac
-                done
-
-                echo -e "Has common vendor?"
-                select yn in "Yes" "No";
-                do
-                  case $yn in
-                  Yes)
-                     git clone --quiet $vendor_tree -b $vendor/$device/
-                     break
-                     ;;
-                  No)
-                     git clone --quiet $vendor_tree -b $vendor/$device/$codename > /dev/null
-                     break
-                     ;;
-                  esac
-                done
-             fi
-          fi
-       fi
+            git clone --quiet git@github.com:TenX-OS-Beta/frameworks_base.git frameworks/base > /dev/null
+            git clone --quiet git@github.com:TenX-OS-Beta/vendor_overlays_Elegance.git vendor/overlays/Elegance > /dev/null
+            git clone --quiet git@github.com:TenX-OS-Beta/packages_apps_Settings.git packages/apps/Settings > /dev/null
+            git clone --quiet git@github.com:TenX-OS-Beta/packes_apps_TenX.git packages/apps/TenX > /dev/null
+        fi
     fi
 }
 
-# Clone sources
-function clone() {
-    echo -e "Enter the device tree branch: "
-    read dt_branch
-    echo -e "Enter the vendor tree branch: "
-    read vt_branch
-
-    echo -e "Do you use prebuilt kernel?"
-    select yn in "Yes" "No"; do
-    case $yn in
-    Yes)
-       echo -e "Enter the kernel tree branch: "
-       read kt_branch
-       break
-       ;;
-    No)
-       break
-       ;;
-    *)
-       break
-       ;;
-       esac
-    done
-
-    if [ $codename == RMX2121 ]; then
-       cd $rom_name
-       git clone --quiet git@github.com:Realme-X7-Pro-Developers/device_realme_RMX2121.git -b eleven $dt_branch/$device/$codename > /dev/null
-       git clone --quiet git@github.com:Realme-X7-Pro-Developers/vendor_realme_RMX2121.git -b 11-rmui2 $vt_branch/$device/$codename > /dev/null
+# Clone device trees
+function clone_trees() {
+    if [ $device == realme ] && [ $codename == RMX2121 ]; then
+        git clone https://github.com/Realme-X7-Pro-Developers/device_realme_RMX2121.git device/realme/RMX2121
+        git clone https://github.com/Realme-X7-Pro-Developers/vendor_realme_RMX2121.git vendor/realme/RMX2121
     else
-       clone_trees
+        if [ $device != realme ]; then
+           if [ $device != oneplus ]; then
+              if [ $codename != RMX2121 ]; then
+                  if [ $codename != kebab ]; then
+                    echo -e "Enter your Device Tree link: "
+                    read device_tree
+                    echo -e "Enter your Device Tree branch"
+                    read device_tree_branch
+                    echo -e "Enter your Vendor Tree link: "
+                    read vendor_tree
+                    echo -e "Enter your Vendor Tree branch"
+                    read vendor_tree_branch
+                    echo "Do you use prebuilt kernel?"
+                    select yn in "Yes" "No";
+                    do
+                    case $yn in
+                    Yes)
+                       break
+                       ;;
+                    No)
+                       echo -e "Enter your Kernel Tree link: "
+                       read kernel_tree
+                       echo -e "Enter your Kernel Tree branch"
+                       read kernel_tree_branch
+                       break
+                       ;;
+                      esac
+                    done
+
+                    echo -e "Cloning Device Tree"
+                    git clone --quiet $device_tree -b $device_tree_branch device/$device/$codename > /dev/null
+                    echo -e "Kernel path uses platform or codename?"
+                    select yn in "Yes" "No";
+                    do
+                      case $yn in
+                      Yes)
+                         echo -e "Enter device platform"
+                         read platform
+                         git clone --quiet $kernel_tree -b kernel/$device/$platform
+                         break
+                         ;;
+                      No)
+                         git clone --quiet $kernel_tree -b kernel/$device/$codename > /dev/null
+                         break
+                         ;;
+                      esac
+                    done
+
+                    echo -e "Has common vendor?"
+                    select yn in "Yes" "No";
+                    do
+                      case $yn in
+                      Yes)
+                         git clone --quiet $vendor_tree -b $vendor/$device/
+                         break
+                         ;;
+                      No)
+                         git clone --quiet $vendor_tree -b $vendor/$device/$codename > /dev/null
+                         break
+                         ;;
+                      esac
+                    done
+                 fi
+              fi
+           fi
+        fi
     fi
 }
 
 # Clean build
 function build_type() {
     echo -e "Do you want to make a Clean build?"
+    echo -e "Typing Yes would make a Clean Build"
+    echo -e "Typing No would make a Dirty Build"
     select yn in "Yes" "No";
     do
       case $yn in
@@ -352,7 +348,7 @@ function upload() {
         gdrive)
         if [ $rom_name == tenx ]; then
             gdrive upload *.zip
-        elif [ $rom_name == pe [; then
+        elif [ $rom_name == pe ]; then
             gdrive upload *.zip
         else
             gdrive upload *.zip
@@ -374,7 +370,8 @@ function upload() {
 device_name
 device_codename
 rom_name
-clone
+check_tenx
+clone_trees
 build_type
 compile
 upload
