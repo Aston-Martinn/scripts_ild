@@ -118,6 +118,7 @@ cd ~
 # Device name
 function device_name() {
     echo -e "Enter your Device Name: "
+    echo -e "Available devices are \n 1. realme \n 2. oneplus \n 3. asus for Automation"
     echo -e "NOTE: Device name should be in lower cases only!!"
     read device
     echo -e "Entered parameter was $device"
@@ -127,7 +128,7 @@ function device_name() {
 function device_codename() {
     echo -e "Enter your Device Codename: "
     echo -e "Available codenames are:"
-    echo -e "\n 1. RMX2121 \n 2. kebab"
+    echo -e "\n 1. RMX2121 \n 2. kebab \n 3. X00T for Automation"
     read codename
     echo -e "Entered parameter was $codename"
 }
@@ -195,6 +196,11 @@ function clone_trees() {
     if [ $device == realme ] && [ $codename == RMX2121 ]; then
         git clone https://github.com/Realme-X7-Pro-Developers/device_realme_RMX2121.git device/realme/RMX2121
         git clone https://github.com/Realme-X7-Pro-Developers/vendor_realme_RMX2121.git vendor/realme/RMX2121
+    elif
+       [ $device == asus ] && [ $codename == X00T ]; then
+        git clone https://github.com/Aston-Martinn/device_asus_X00T.git device/asus/X00T
+        git clone https://github.com/ArrowOS-Devices/android_kernel_asus_X00T.git -b arrow-11.0 kernel/asus/sdm660
+        git clone https://github.com/ArrowOS-Devices/android_vendor_asus_X00T.git -b arrow-11.0 vendor/asus
     else
         if [ $device != realme ]; then
            if [ $device != oneplus ]; then
