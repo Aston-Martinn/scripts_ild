@@ -145,19 +145,28 @@ function rom_name() {
     case $rom_name in
         tenx)
             mkdir tenx && cd tenx
-            sendTG "Syncing TenX-OS"
+            if [[ -d /home/kuntao ]];
+            then
+                sendTG "Syncing TenX-OS"
+            fi
             repo init -u git://github.com/TenX-OS/manifest_TenX -b eleven
             repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
             ;;
         pe)
             mkdir pe && cd pe
-            sendTG "Syncing PixelExperience"
+            if [[ -d /home/kuntao ]];
+            then
+                sendTG "Syncing PixelExperience"
+            fi
             repo init -u https://github.com/PixelExperience/manifest -b eleven
             repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
             ;;
         los)
             mkdir los && cd los
-            sendTG "Syncing Lineage-OS"
+            if [[ -d /home/kuntao ]];
+            then
+                sendTG "Syncing Lineage-OS"
+            fi
             repo init -u git://github.com/LineageOS/android.git -b lineage-18.1
             repo sync
             ;;
@@ -302,11 +311,14 @@ function build_type() {
 # Compile
 function compile() {
     if [ $rom_name == tenx ]; then
-       sendTG "Compiling TenX-OS for
-       ▪️️️Device: \`Realme X7 Pro\`
-       ▪️Codename: \`RMX2121\`
-       ▪️Host: \`Advaith Bhat\`
-       ▪️Host-Machine: \`Kuntao-server\`"
+       if [[ -d /home/kuntao ]];
+       then
+           sendTG "Compiling TenX-OS for
+           ▪️️️Device: \`Realme X7 Pro\`
+           ▪️Codename: \`RMX2121\`
+           ▪️Host: \`Advaith Bhat\`
+           ▪️Host-Machine: \`Kuntao-server\`"
+       fi
        . build/envsetup.sh
        if [ $host == AdvaithBhat ] && [ $codename == RMX2121 ]; then
           export CUSTOM_BUILD_TYPE=Official
@@ -316,22 +328,28 @@ function compile() {
        ccache -M 30G
        brunch $codename
     elif [ $rom_name == pe ]; then
-       sendTG "Compiling PixelExperience for
-       ▪️️️Device: \`Realme X7 Pro\`
-       ▪️Codename: \`RMX2121\`
-       ▪️Host: \`Advaith Bhat\`
-       ▪️Host-Machine: \`Kuntao-server\`"
+       if [[ -d /home/kuntao ]];
+       then
+           sendTG "Compiling PixelExperience for
+           ▪️️️Device: \`Realme X7 Pro\`
+           ▪️Codename: \`RMX2121\`
+           ▪️Host: \`Advaith Bhat\`
+           ▪️Host-Machine: \`Kuntao-server\`"
+       fi
        . build/envsetup.sh
        lunch aosp_$codename-userdebug
        export USE_CCACHE=1
        ccache -M 30G
        brunch $codename
     else
-       sendTG "Compiling Lineage-OS for
-       ▪️️️Device: \`Realme X7 Pro\`
-       ▪️Codename: \`RMX2121\`
-       ▪️Host: \`Advaith Bhat\`
-       ▪️Host-Machine: \`Kuntao-server\`"
+       if [[ -d /home/kuntao ]];
+       then
+           sendTG "Compiling Lineage-OS for
+           ▪️️️Device: \`Realme X7 Pro\`
+           ▪️Codename: \`RMX2121\`
+           ▪️Host: \`Advaith Bhat\`
+           ▪️Host-Machine: \`Kuntao-server\`"
+       fi
        . build/envsetup.sh
        lunch lineage_$codename-userdebug
        export USE_CCACHE=1
