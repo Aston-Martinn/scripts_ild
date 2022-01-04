@@ -135,10 +135,10 @@ function device_codename() {
 
 function rom_name() {
     echo -e "Supported ROM's are "
-    echo -e " \n 1. TenX-OS \n 2. PixelExperience \n 3. Lineage-OS \n"
+    echo -e " \n 1. TenX-OS \n 2. PixelExperience \n 3. Lineage-OS \n 4. Dot-OS \n 5. DerpFest \n"
     echo -e "Enter the ROM you would like to Compile?"
     echo -e "Format is: "
-    echo -e "\n tenx \n pe \n los \n"
+    echo -e "\n tenx \n pe \n los \n dotos \n derpfest \n"
     read rom_name
     echo -e "Entered parameter was $rom_name"
 
@@ -170,6 +170,22 @@ function rom_name() {
             repo init -u git://github.com/LineageOS/android.git -b lineage-18.1
             repo sync
             ;;
+        dotos)
+            mkdir dotos && cd dotos
+            if [[ -d /home/kuntao ]];
+            then
+                sendTG "Syncing Dot-OS"
+            fi
+            repo init -u git://github.com/DotOS/manifest.git -b dot11
+            repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+        derpfest)
+            mkdir derpfest && cd derpfest
+            if [[ -d /home/kuntao ]];
+            then
+                sendTG "Syncing DerpFest"
+            fi
+            repo init -u git://github.com/DerpFest-11/manifest.git -b 11
+            repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j$(nproc --all)
         *)
             echo -e "Enter parameter is not available"
             exit 1
@@ -341,6 +357,34 @@ function compile() {
        export USE_CCACHE=1
        ccache -M 30G
        brunch $codename
+    elif [ $rom_name == dotos ]; then
+       if [[ -d /home/kuntao ]];
+       then
+           sendTG "Compiling Dot-OS for
+           ▪️️️Device: \`Realme X7 Pro\`
+           ▪️Codename: \`RMX2121\`
+           ▪️Host: \`Advaith Bhat\`
+           ▪️Host-Machine: \`Kuntao-server\`"
+       fi
+       . build/envsetup.sh
+       lunch dot_$codename-userdebug
+       export USE_CCACHE=1
+       ccache -M 30G
+       make bacon
+    elif [ $rom_name == derpfest ]; then
+       if [[ -d /home/kuntao ]];
+       then
+           sendTG "Compiling DerpFest for
+           ▪️️️Device: \`Realme X7 Pro\`
+           ▪️Codename: \`RMX2121\`
+           ▪️Host: \`Advaith Bhat\`
+           ▪️Host-Machine: \`Kuntao-server\`"
+       fi
+       . build/envsetup.sh
+       lunch derp_$codename-userdebug
+       export USE_CCACHE=1
+       ccache -M 30G
+       mka derp
     else
        if [[ -d /home/kuntao ]];
        then
